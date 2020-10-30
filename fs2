@@ -4,9 +4,11 @@ import sys,os,time
 import click
 from fs import open_fs, errors
 from fs.path import relpath, normpath, basename, dirname
+import shutil
+from fs.words2lines import words2lines
 
 @click.group()
-@click.option('--url', default='.', help='example e.g. . or file:///tmp or webdav://user:pass@127.0.0.1/webdav/subdir/')
+@click.option('--url', '-u', default='.', help='filesystem url: default is ".", eg. file:///tmp or webdav://user:pass@127.0.0.1/webdav/subdir/')
 @click.pass_context
 def fs2(ctx, url):
     if '://' not in url:
@@ -22,17 +24,21 @@ def fs2(ctx, url):
 def ls(ctx, paths):
     fs = ctx.obj['fs']
     url = ctx.obj['url']
-    print('-------------------- fs %s --------------------' % url)
     paths = paths or ['.']
     for path in paths:
+        _path = path
         path = relpath(normpath(path))
         try:
-            result = fs.listdir(path)
-            print('-------------------- dir %s/ --------------------' % path)
-            print('\n'.join(result))
+            names = fs.listdir(path)
+            if url.lower().startswith('file://') or url.lower().startswith('osfs://'):
+                names.sort(key=lambda x: x.lstrip('.').lstrip('_').lower()) # sort as /bin/ls do
+                # names = ['.', '..'] + names       # need not
+            if len(paths) > 1:
+                print('%s/:' % _path.rstrip('/'))
+            print('\n'.join(words2lines(names)))
         except errors.DirectoryExpected:
-            print('-------------------- file %s --------------------' % path)
-            print(path)
+            print('%s:' % _path.rstrip('/'))
+        print()
 
 @fs2.command()
 @click.argument('paths', nargs=-1)
