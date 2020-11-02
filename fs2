@@ -6,6 +6,7 @@ from fs import open_fs, errors
 from fs.path import relpath, normpath, basename, dirname
 import shutil
 from fs.words2lines import words2lines
+import posixpath
 
 def _listopener():
     from fs.opener  import registry
@@ -71,6 +72,102 @@ def cat(ctx, paths):
             print('Error: %s/ is a dir' % path, file=sys.stderr)
         else:
             print(result.decode(sys.getdefaultencoding(), 'replace'))
+
+@fs2.command()
+@click.argument('paths', nargs=-1)
+@click.option('--parents', '-p', is_flag=True, help='no error if existing, make parent directories as needed')
+@click.pass_context
+def mkdir(ctx, paths, parents):
+    """mkdir folders"""
+    fs = ctx.obj['fs']
+    for path in paths:
+        try:
+            if parents:
+                fs.makedirs(path, recreate=True)
+            else:
+                fs.makedir(path, recreate=True)
+        except errors.ResourceNotFound:
+            click.echo('parent dir not exist: %s' % posixpath.dirname(path))
+            break
+        except errors.DirectoryExpected as e:
+            click.echo('%s. Check Tip: %s' % (e, path.replace('/', '(<-aFile?) / ')))
+            break
+
+@fs2.command()
+@click.argument('paths', nargs=-1)
+@click.option('--recursive', '-r', is_flag=True, help='remove directories and their contents recursively')
+@click.option('--force', '-f', is_flag=True, help='ignore nonexistent files and arguments, never prompt')
+@click.option('--interactive', '-i', is_flag=True, help='prompt before every removal')
+@click.pass_context
+def rm(ctx, paths, recursive, force, interactive):
+    """Be Careful to remove !!!"""
+    if not force:
+        click.confirm('Data is priceless. Continue [DELETE]?', abort=True, default=True)
+    fs = ctx.obj['fs']
+    url = ctx.obj['url']
+    for path in paths:
+        if interactive and not click.confirm('Ensure delete %s ?' % path, abort=True, default=True):
+            return
+        try:
+            fs.remove(path)         # remove file
+            click.echo('file is removed: %s' % path)
+        except errors.ResourceNotFound:
+            if force:
+                click.echo('[WARNING] not found: %s' % path)
+            else:
+                click.echo('abort (unless --force) because not found: %s' % path)
+        except errors.FileExpected:
+            if recursive:
+                fs.removetree(path) # remove dir
+                click.echo('dir is removed: %s' % path)
+            else:
+                click.echo('need --recursive/-r to rm dir %s' % path)
+
+@fs2.command()
+@click.argument('src', nargs=-1)
+@click.argument('dst', nargs=1)
+@click.option('--recursive', '-r', is_flag=True, help='copy directories recursively')
+@click.option('--force', '-f', is_flag=True, help='force overwrite if existing destination file')
+@click.pass_context
+def cp(ctx, src, dst, recursive, force):
+    """Copy file from SRC to DST.
+    ./fs2 cp tox.ini tmp.ini
+    """
+    fs = ctx.obj['fs']
+    url = ctx.obj['url']
+    dst_is_dir, dirlist = True, []
+    try:
+        dirlist = fs.listdir(dst)
+    except errors.DirectoryExpected:
+        dst_is_dir = False
+        if not len(src) == 1:
+            # raise errors.Unsupported(msg='must overwrite a file with only one file')
+            click.echo('%s is a file so only one src file is need' % dst)
+            return
+    except errors.ResourceNotFound:
+        if len(src) == 1:
+            dst_is_dir = False
+    for fn in src:
+        _dst = dst
+        if dst_is_dir:
+            _dst = posixpath.join(dst,posixpath.basename(fn))
+        try:
+            fs.copy(fn, _dst, overwrite=force)
+        except errors.ResourceNotFound:
+            click.echo('parent dir not exists: %s' % posixpath.dirname(_dst))
+            # fs.makedirs(posixpath.dirname(_dst))
+            # fs.copy(fn, _dst, overwrite=force)
+        # fs.create(_dst) # errors.ResourceNotFound: resource 'abc/efg/a.ini' not found
+
+@fs2.command()
+@click.argument('src', nargs=-1)
+@click.argument('dst', nargs=1)
+@click.pass_context
+def mv(ctx, src, dst):
+    """Move file from SRC to DST."""
+    for fn in src:
+        click.echo('mv %s to %s' % (fn, dst))
+
 
 if __name__ == '__main__':
     fs2()
