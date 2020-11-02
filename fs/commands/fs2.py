@@ -5,7 +5,7 @@ import click
 from fs import open_fs, errors
 from fs.path import relpath, normpath, basename, dirname
 import shutil
-from fs.words2lines import words2lines
+from .words2lines import words2lines
 import posixpath
 
 def _listopener():
