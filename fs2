@@ -18,12 +18,12 @@ def _listopener():
 @click.option('--url', '-u', default='.', help='filesystem url: default is ".", eg. file:///tmp or webdav://user:pass@127.0.0.1/webdav/subdir/')
 @click.pass_context
 def fs2(ctx, listopener, url):
-    # print(vars(ctx))
-    if not (ctx.args or ctx.invoked_subcommand):
-        click.echo(ctx.get_help())
+    # print(vars(ctx), listopener, url)
     if listopener:
         _listopener()
         return
+    if not (ctx.args or ctx.invoked_subcommand):
+        click.echo(ctx.get_help())
     if '://' not in url:
         url = 'file://' + url
     ctx.ensure_object(dict)
