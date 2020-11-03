@@ -34,7 +34,6 @@ def rm(ctx, paths, force, verbose, interactive, recursive):
                 click.confirm('%s is a dir, need --recursive/-r option. Continue?' % path, abort=True, default=True)
             tops = []
             for top, subs, files in fs.walk.walk(path):
-                print(top, subs, files)
                 for finfo in files:
                     target = posixpath.join(top, finfo.name)
                     if interactive:

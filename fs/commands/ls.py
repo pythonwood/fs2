@@ -4,7 +4,7 @@ from fs.path import relpath, normpath
 from .words2lines import words2lines
 
 @fs2.command()
-@click.argument('paths', nargs=-1, required=False) # 不限个数
+@click.argument('paths', nargs=-1, required=False)
 @click.option('--force', '-f', is_flag=True, help='force skip instead of aborting')
 @click.pass_context
 def ls(ctx, paths, force):

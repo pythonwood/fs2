@@ -27,7 +27,7 @@ def _mv(fs, src, dst, force, vcount=0):
 @click.option('--verbose', '-v', count=True, help='more info')
 @click.pass_context
 def mv(ctx, src, dst, force, verbose):
-    """Move file from SRC to DST.
+    """move file (same fs).
     ./fs2 mv tox.ini .
     ./fs2 mv tox.ini tmp.ini
     ./fs2 mv tox.ini a.ini dir/ path/to/
