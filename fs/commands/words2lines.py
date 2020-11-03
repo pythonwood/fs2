@@ -14,7 +14,8 @@ _WORDSEP = '  '
 
 def words2lines(words, max_width=_COLUMNS):
     '''
-["a b", 'c', 'efg', 'hi', 'j']
+words = ["a b", 'c', 'efg', 'hi', 'j']
+
 max_width = 20  return ['"a b"  c  efg  hi  j']
 max_width = 19  return ['"a b"  efg  j',
                         'c      hi'     ]
@@ -40,6 +41,9 @@ fallback each word is a line
             result.append(line)
         return result
 
+    if not words:
+        return []
+
     _words = words
     words = wordsfix(_words)
 
@@ -54,7 +58,7 @@ fallback each word is a line
         if sum(colslens) + len(_WORDSEP)*(len(colslens)-1) <= max_width:
             return build_result(words, colslens, totalline)
 
-    return words    # fallback if word totalcol is 1
+    return words    # fallback 1 word 1 line
 
 if __name__ == '__main__':
     print('\n'.join(words2lines(['a b', 'c', 'efg', 'hi', 'j'], 20))) # 5 cols
