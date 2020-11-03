@@ -1,5 +1,10 @@
+from fs.path import relpath, normpath, abspath
+import posixpath
+import os,sys
+import posixpath
+
 from .init import fs2, click, errors
-from fs.path import relpath, normpath
+from .init import FS2_NOEXIST, FS2_ISFILE, FS2_ISDIR
 
 @fs2.command()
 @click.argument('src', nargs=-1)
@@ -9,25 +14,31 @@ from fs.path import relpath, normpath
 @click.pass_context
 def cp(ctx, src, dst, recursive, force):
     """Copy file from SRC to DST.
-    ./fs2 cp tox.ini tmp.ini
+    ./fs2 cp tox.ini .
+    ./fs2 cp tox.ini a.ini dir/ path/to/
     """
     fs = ctx.obj['fs']
-    url = ctx.obj['url']
-    dst_is_dir, dirlist = True, []
+
+    ### check dst part
+    dst_is, dirlist = FS2_ISDIR, []
     try:
         dirlist = fs.listdir(dst)
+        if not force:
+            click.confirm('%s is an exist dir. Continue?' % dst, abort=True, default=True)
     except errors.DirectoryExpected:
-        dst_is_dir = False
-        if not len(src) == 1:
-            # raise errors.Unsupported(msg='must overwrite a file with only one file')
-            click.echo('%s is a file so only one src file is need' % dst)
+        dst_is = FS2_ISFILE
+        if not len(src) == 1 or not os.path.isfile(src[0]):
+            click.echo('%s is a file so only one file is need' % dst)
             return
+        if not force:
+            click.confirm('%s is an exist file. Continue?' % dst, abort=True, default=True)
     except errors.ResourceNotFound:
         if len(src) == 1:
-            dst_is_dir = False
+            dst_is = FS2_NOEXIST
+
     for fn in src:
         _dst = dst
-        if dst_is_dir:
+        if dst_is == FS2_ISDIR:
             _dst = posixpath.join(dst,posixpath.basename(fn))
         try:
             fs.copy(fn, _dst, overwrite=force)

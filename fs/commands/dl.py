@@ -1,17 +1,25 @@
 from fs.path import relpath, normpath, abspath
-import os,sys
+import os,sys,time
 import posixpath
 import io
 
-from .init import fs2, click, errors
+from .init import fs2, click, errors, timing
 from .init import FS2_NOEXIST, FS2_ISFILE, FS2_ISDIR
+
+
+def _download(fs, src, dst, vcount=0):
+    with open(dst, 'wb') as f:
+        fs.download(src, f)
+        if vcount >= 1:
+            print(time.strftime('%F_%T'), 'transfer %8.3f Kbytes for %s' % (f.tell()/1024, dst))
 
 @fs2.command()
 @click.argument('src', nargs=-1)
 @click.argument('dst', nargs=1)
 @click.option('--force', '-f', is_flag=True, help='force overwrite if existing destination file')
+@click.option('--verbose', '-v', count=True, help='more info')
 @click.pass_context
-def dl(ctx, src, dst, force):
+def dl(ctx, src, dst, force, verbose):
     """download file to local os
     example:
     dl . locdir/
@@ -54,14 +62,12 @@ def dl(ctx, src, dst, force):
                     if not force:
                         click.confirm('%s is an exist dir. Continue?' % _dst, abort=True, default=True)
                 for finfo in files:
-                    with open(posixpath.join(_dst, finfo.name), 'wb') as f:
-                        fs.download(posixpath.join(top, finfo.name), f)
+                    _download(fs, posixpath.join(top, finfo.name), posixpath.join(_dst, finfo.name), verbose)
         except errors.DirectoryExpected:
             _dst = dst
             if dst_is == FS2_ISDIR:
                 _dst = posixpath.join(dst, posixpath.basename(fn))
-            with open(_dst, 'wb') as f:
-                fs.download(fn, f)
+            _download(fs, fn, _dst, verbose)
         except errors.ResourceNotFound:
             if not force:
                 click.confirm('%s is not exist. Continue?' % fn, abort=True, default=True)

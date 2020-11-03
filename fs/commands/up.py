@@ -1,17 +1,24 @@
 from fs.path import relpath, normpath, abspath
-import os,sys
+import os,sys,time
 import posixpath
 import io
 
-from .init import fs2, click, errors
+from .init import fs2, click, errors, timing
 from .init import FS2_NOEXIST, FS2_ISFILE, FS2_ISDIR
+
+def _upload(fs, src, dst, vcount=0):
+    with open(src, 'rb') as f:
+        fs.upload(dst, f)
+        if vcount >= 1:
+            print(time.strftime('%F_%T'), 'transfer %8.3f Kbytes for %s' % (f.tell()/1024, dst))
 
 @fs2.command()
 @click.argument('src', nargs=-1)
 @click.argument('dst', nargs=1)
 @click.option('--force', '-f', is_flag=True, help='force overwrite if existing destination file')
+@click.option('--verbose', '-v', count=True, help='more info')
 @click.pass_context
-def up(ctx, src, dst, force):
+def up(ctx, src, dst, force, verbose):
     """upload local file to remote filesystem
     example:
     up a.txt .
@@ -48,8 +55,7 @@ def up(ctx, src, dst, force):
             _dst = dst
             if dst_is == FS2_ISDIR:
                 _dst = posixpath.join(dst,posixpath.basename(fn))
-            with open(fn, 'rb') as f:
-                fs.upload(_dst, f)
+            _upload(fs, fn, _dst, verbose)
         else:
             for top, subs, files in os.walk(fn):
                 # up loc/dir pathnoexist =>  loc/dir/a/b default to pathnoexist/dir/a/b
@@ -61,7 +67,6 @@ def up(ctx, src, dst, force):
                 except errors.DirectoryExists:
                     click.confirm('%s is an exist dir. Continue?' % _dst, abort=True, default=True)
                 for locname in files:
-                    with open(posixpath.join(top, locname), 'rb') as f:
-                        fs.upload(posixpath.join(_dst, locname), f)
+                    _upload(fs, posixpath.join(top, locname), posixpath.join(_dst, locname), verbose)
 
 

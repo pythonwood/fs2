@@ -9,6 +9,7 @@ from .cat   import cat
 from .mkdir import mkdir
 from .tree  import tree
 from .cp    import cp
+from .mv    import mv
 from .rm    import rm
 from .dl    import dl
 from .up    import up
