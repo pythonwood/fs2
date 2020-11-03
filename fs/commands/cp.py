@@ -25,6 +25,8 @@ def _cp(fs, src, dst, force, vcount=0):
 @click.pass_context
 def cp(ctx, src, dst, force, verbose, recursive):
     """copy file (same fs).
+
+    \b
     example:
         cp dir/a/tox.ini ./
         cp tox.ini tmp.ini

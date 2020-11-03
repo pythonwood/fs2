@@ -21,6 +21,8 @@ def _download(fs, src, dst, vcount=0):
 @click.pass_context
 def dl(ctx, src, dst, force, verbose):
     """download file to local disk.
+
+    \b
     example:
         dl a.txt .
         dl a.txt loc/b.txt

@@ -8,6 +8,8 @@ from fs.path import relpath, normpath
 @click.pass_context
 def cat(ctx, paths, force):
     '''read file and print content.
+
+    \b
     example:
         cat a.txt
         cat a.ini a.txt

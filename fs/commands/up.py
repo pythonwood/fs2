@@ -20,6 +20,8 @@ def _upload(fs, src, dst, vcount=0):
 @click.pass_context
 def up(ctx, src, dst, force, verbose):
     """upload local disk file to remote filesystem.
+
+    \b
     example:
         up a.txt .
         up a.txt b.txt
