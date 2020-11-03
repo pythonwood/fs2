@@ -19,12 +19,12 @@ def _upload(fs, src, dst, vcount=0):
 @click.option('--verbose', '-v', count=True, help='more info')
 @click.pass_context
 def up(ctx, src, dst, force, verbose):
-    """upload local file to remote filesystem
+    """upload local disk file to remote filesystem.
     example:
-    up a.txt .
-    up a.txt remote/b.txt
-    up a.txt b.png c.mp3 dir/d/ remote/dir/
-    up ./ remote/
+        up a.txt .
+        up a.txt b.txt
+        up a.txt b.png c.mp3 dir/d/ remote/dir/
+        up ./ remote/
     """
     fs = ctx.obj['fs']
 

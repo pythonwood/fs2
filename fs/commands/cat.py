@@ -7,6 +7,11 @@ from fs.path import relpath, normpath
 @click.option('--force', '-f', is_flag=True, help='force skip if instead of aborting')
 @click.pass_context
 def cat(ctx, paths, force):
+    '''read file and print content.
+    example:
+        cat a.txt
+        cat a.ini a.txt
+    '''
     fs = ctx.obj['fs']
     for path in paths:
         path = relpath(normpath(path))

@@ -6,6 +6,11 @@ from .init import fs2, click, errors
 from .init import FS2_NOEXIST, FS2_ISFILE, FS2_ISDIR
 
 def _mv(fs, src, dst, force, vcount=0):
+    """move file and dirs.
+    example:
+        mkdir dir1 dir2
+        mkdir -p dir1/sub/dir dir2/
+    """
     try:
         fs.move(src, dst, overwrite=force)
     except errors.DestinationExists:

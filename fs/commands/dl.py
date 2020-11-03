@@ -20,12 +20,12 @@ def _download(fs, src, dst, vcount=0):
 @click.option('--verbose', '-v', count=True, help='more info')
 @click.pass_context
 def dl(ctx, src, dst, force, verbose):
-    """download file to local os
+    """download file to local disk.
     example:
-    dl . locdir/
-    dl a.txt .
-    dl a.txt loc/b.txt
-    dl a.txt b.png c.mp3 dir/d/ remote/dir/
+        dl a.txt .
+        dl a.txt loc/b.txt
+        dl ./ locdir/
+        dl a.txt b.png c.mp3 dir/d/ remote/dir/
     """
     fs = ctx.obj['fs']
 

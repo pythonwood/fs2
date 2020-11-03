@@ -29,6 +29,7 @@ def _listopener():
 @click.option('--url', '-u', default='.', help='filesystem url: default is ".", eg. file:///tmp or webdav://user:pass@127.0.0.1/webdav/subdir/')
 @click.pass_context
 def fs2(ctx, listopener, url):
+    ''' This script is pyfilesystem2 command line tool '''
     # print(vars(ctx), listopener, url)
     if listopener:
         _listopener()

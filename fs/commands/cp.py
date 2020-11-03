@@ -24,10 +24,11 @@ def _cp(fs, src, dst, force, vcount=0):
 @click.option('--recursive', '-r', is_flag=True, help='copy directories recursively')
 @click.pass_context
 def cp(ctx, src, dst, force, verbose, recursive):
-    """Copy file.
-    ./fs2 cp tox.ini .
-    ./fs2 cp tox.ini tmp.ini
-    ./fs2 cp tox.ini a.ini dir/ path/to/
+    """copy file (same fs).
+    example:
+        cp dir/a/tox.ini ./
+        cp tox.ini tmp.ini
+        cp tox.ini a.ini dir/ path/to/
     """
     fs = ctx.obj['fs']
 

@@ -6,6 +6,10 @@ from fs.path import relpath, normpath
 @click.option('--max-levels', '-m', default=-1, help='Maximum number of levels to display, or -1 for no maximum')
 @click.pass_context
 def tree(ctx, path, max_levels):
+    '''list files and dirs as tree view.
+    example:
+        tree .
+    '''
     fs = ctx.obj['fs']
     _path = path or '.'
     _max_levels = None if max_levels == -1 else max_levels

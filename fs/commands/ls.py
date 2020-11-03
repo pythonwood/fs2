@@ -8,6 +8,11 @@ from .words2lines import words2lines
 @click.option('--force', '-f', is_flag=True, help='force skip instead of aborting')
 @click.pass_context
 def ls(ctx, paths, force):
+    '''list files and dirs.
+    example:
+        ls .
+        ls dirA dirx/ a/b.txt
+    '''
     fs = ctx.obj['fs']
     url = ctx.obj['url']
     paths = paths or ['.']
