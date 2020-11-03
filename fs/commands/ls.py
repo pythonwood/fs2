@@ -5,8 +5,9 @@ from .words2lines import words2lines
 
 @fs2.command()
 @click.argument('paths', nargs=-1, required=False) # 不限个数
+@click.option('--force', '-f', is_flag=True, help='force skip instead of aborting')
 @click.pass_context
-def ls(ctx, paths):
+def ls(ctx, paths, force):
     fs = ctx.obj['fs']
     url = ctx.obj['url']
     paths = paths or ['.']
@@ -23,4 +24,7 @@ def ls(ctx, paths):
             print('\n'.join(words2lines(names)))
         except errors.DirectoryExpected:
             print('%s:' % _path.rstrip('/'))
+        except errors.ResourceNotFound:
+            if not force:
+                click.confirm('%s is not exist. Skip?' % _path, abort=True, default=True)
         print()

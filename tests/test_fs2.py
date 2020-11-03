@@ -10,6 +10,12 @@ from fs.path import relpath, dirname
 
 from click.testing import CliRunner
 from fs.commands import fs2
+from fs import errors
+
+try:
+    from unittest import mock
+except ImportError:
+    import mock
 
 
 class TestFS2(unittest.TestCase):
@@ -25,7 +31,7 @@ class TestFS2(unittest.TestCase):
         os.makedirs(self._realpath('a/1'), exist_ok=True)
         for fn in ['a/b/c/d.txt', 'a/b.txt', 'a/0.ini', 'a/1/a1.txt', 'a/1/a2.txt']:
             with open(self._realpath(fn), 'w') as f:
-                f.write('\n'.join(str(i) for i in range(100)))
+                f.write('\n'.join(str(i) for i in range(100, 110)))
         self.runner = CliRunner()
 
     def tearDown(self):
@@ -49,20 +55,20 @@ class TestFS2(unittest.TestCase):
         self.assertIn('ZipOpener',  result.output)
 
     def test_ls(self):
-        args = ['-u', self._realpath('/'), 'ls', '.', 'a/b/c/', 'a/0.ini', 'a/1']
-        result = self.runner.invoke(fs2, args)
+        args = ['-u', self._realpath('/'), 'ls', '.', 'a/0.ini', 'a/1', 'no_exists_dir/1.ini', 'a/b/c']
+        result = self.runner.invoke(fs2, args, input='N\n')
         print(result.output)
-        self.assertEqual(result.exit_code, 0)
+        self.assertNotEqual(result.exit_code, 0)
         self.assertIn('a1.txt',  result.output)
 
     def test_cat(self):
-        args = ['-u', self._realpath('/'), 'cat', 'a/0.ini']
-        result = self.runner.invoke(fs2, args)
-        print(repr(result.output))
-        self.assertEqual(result.exit_code, 0)
+        args = ['-u', self._realpath('/'), 'cat', 'a/0.ini', 'a/b.txt', 'a', 'no_exists_dir/1.ini']
+        result = self.runner.invoke(fs2, args, input='Y\nN\n')
+        print(result.output)
+        self.assertNotEqual(result.exit_code, 0)
 
     def test_tree(self):
-        args = ['-u', self._realpath('/'), 'tree', '.']
+        args = ['-u', self._realpath('/'), 'tree', 'a/']
         result = self.runner.invoke(fs2, args)
         print(result.output)
         self.assertEqual(result.exit_code, 0)
@@ -72,6 +78,10 @@ class TestFS2(unittest.TestCase):
         args = ['-u', self._realpath('/'), 'mkdir', '-p', '1/2/3']
         result = self.runner.invoke(fs2, args)
         self.assertEqual(result.exit_code, 0)
+        args = ['-u', self._realpath('/'), 'mkdir', '1/2/3', 'no_exists_dir/abc']
+        result = self.runner.invoke(fs2, args, input='N\n')
+        print(result.output)
+        self.assertNotEqual(result.exit_code, 0)
 
     def test_cp(self):
         args = ['-u', self._realpath('/'), 'cp', 'a/0.ini', 'a/cp.ini']
