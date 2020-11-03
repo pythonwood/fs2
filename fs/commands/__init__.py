@@ -10,5 +10,7 @@ from .mkdir import mkdir
 from .tree  import tree
 from .cp    import cp
 from .rm    import rm
+from .dl    import dl
+from .up    import up
 
 __all__ = ["fs2"]

@@ -2,6 +2,8 @@ from fs import open_fs, errors
 import shutil
 import click
 
+FS2_NOEXIST, FS2_ISFILE, FS2_ISDIR = 0, 1, 2
+
 def _listopener():
     from fs.opener  import registry
     openers = set(registry.get_opener(i).__class__ for i in  registry.protocols)
