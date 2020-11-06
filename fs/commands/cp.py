@@ -2,8 +2,9 @@ from fs.path import relpath, normpath, abspath
 import os,sys,time
 import posixpath
 
-from .init import fs2, click, errors
-from .init import FS2_NOEXIST, FS2_ISFILE, FS2_ISDIR
+import click
+from fs import errors
+from ._tools import FS2_NOEXIST, FS2_ISFILE, FS2_ISDIR
 
 def _cp(fs, src, dst, force, vcount=0):
     try:
@@ -16,7 +17,7 @@ def _cp(fs, src, dst, force, vcount=0):
         print(time.strftime('%F_%T'), 'copyed %s -> %s' % (src, dst))
 
 
-@fs2.command()
+@click.command()
 @click.argument('src', nargs=-1)
 @click.argument('dst', nargs=1)
 @click.option('--force', '-f', is_flag=True, help='force overwrite if existing destination file')

@@ -1,8 +1,9 @@
-from .init import fs2, click, errors
+import click
+from fs import errors
 from fs.path import relpath, normpath
 import posixpath
 
-@fs2.command()
+@click.command()
 @click.argument('paths', nargs=-1)
 @click.option('--parents', '-p', is_flag=True, help='no error if existing, make parent directories as needed')
 @click.option('--force', '-f', is_flag=True, help='force skip if instead of aborting')

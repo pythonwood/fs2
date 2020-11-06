@@ -1,4 +1,5 @@
-from .init import fs2, click, errors
+import click
+from fs import errors
 from fs.path import relpath, normpath
 import os,sys,time
 import posixpath
@@ -9,7 +10,7 @@ def _rm(fs, path, vcount=0):
         print(time.strftime('%F_%T'), 'rm %s' % path)
 
 
-@fs2.command()
+@click.command()
 @click.argument('paths', nargs=-1)
 @click.option('--force', '-f', is_flag=True, help='ignore nonexistent files and arguments, never prompt')
 @click.option('--verbose', '-v', count=True, help='more info')

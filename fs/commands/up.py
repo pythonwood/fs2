@@ -3,8 +3,9 @@ import os,sys,time
 import posixpath
 import io
 
-from .init import fs2, click, errors, timing
-from .init import FS2_NOEXIST, FS2_ISFILE, FS2_ISDIR
+import click
+from fs import errors
+from ._tools import FS2_NOEXIST, FS2_ISFILE, FS2_ISDIR
 
 def _upload(fs, src, dst, vcount=0):
     with open(src, 'rb') as f:
@@ -12,7 +13,7 @@ def _upload(fs, src, dst, vcount=0):
         if vcount >= 1:
             print(time.strftime('%F_%T'), 'transfer %8.3f Kbytes for %s' % (f.tell()/1024, dst))
 
-@fs2.command()
+@click.command()
 @click.argument('src', nargs=-1)
 @click.argument('dst', nargs=1)
 @click.option('--force', '-f', is_flag=True, help='force overwrite if existing destination file')

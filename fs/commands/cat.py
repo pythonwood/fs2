@@ -1,8 +1,9 @@
 import sys
-from .init import fs2, click, errors
+import click
+from fs import errors
 from fs.path import relpath, normpath
 
-@fs2.command()
+@click.command()
 @click.argument('paths', nargs=-1)
 @click.option('--force', '-f', is_flag=True, help='force skip if instead of aborting')
 @click.pass_context

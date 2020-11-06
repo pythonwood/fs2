@@ -1,7 +1,8 @@
 #!/usr/bin/env python
-from .init import fs2, click, errors
+import click
+from fs import errors
 
-@fs2.command()
+@click.command()
 @click.pass_context
 def help(ctx):
     '''print this help msg.'''
