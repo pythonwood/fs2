@@ -12,7 +12,7 @@ def _download(fs, src, dst, vcount=0):
     with open(dst, 'wb') as f:
         fs.download(src, f)
     if vcount >= 1:
-        print(time.strftime('%F_%T'), 'transfer %8.3f Kbytes for %s' % (os.path.getsize(dst)/1024, dst))
+        print(time.strftime('%F_%T'), 'transfer %10s bytes for %s' % (os.path.getsize(dst), dst))
 
 @click.command()
 @click.argument('src', nargs=-1)
@@ -61,6 +61,7 @@ def dl(ctx, src, dst, force, verbose):
                     _dst = posixpath.join(dst, top[len(fn):].lstrip('/'))    # fix to pathnoexist/a/b
                 try:
                     os.makedirs(_dst, exist_ok=force)
+                    print(time.strftime('%F_%T'), 'mkdir %s' % _dst)
                 except FileExistsError:
                     if not force:
                         click.confirm('%s is an exist dir. Continue?' % _dst, abort=True, default=True)
@@ -71,7 +72,7 @@ def dl(ctx, src, dst, force, verbose):
             if dst_is == FS2_ISDIR:
                 _dst = posixpath.join(dst, posixpath.basename(fn))
             _download(fs, fn, _dst, verbose)
-        except errors.ResourceNotFound:
+        except errors.ResourceNotFound as e:
             if not force:
-                click.confirm('%s is not exist. Continue?' % fn, abort=True, default=True)
+                click.confirm('%s. Continue?' % e, abort=True, default=True)
 

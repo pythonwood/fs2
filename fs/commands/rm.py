@@ -31,8 +31,7 @@ def rm(ctx, paths, force, verbose, interactive, recursive):
     fs = ctx.obj['fs']
     for path in paths:
         try:
-            _rm(fs, path, verbose)
-        except errors.FileExpected:
+            dirlist = fs.listdir(path)
             if not recursive:
                 click.confirm('%s is a dir, need --recursive/-r option. Continue?' % path, abort=True, default=True)
             tops = []
@@ -47,6 +46,8 @@ def rm(ctx, paths, force, verbose, interactive, recursive):
                 fs.removedir(top)
                 if verbose >= 1:
                     print(time.strftime('%F_%T'), 'rmdir %s' % top)
+        except errors.DirectoryExpected:
+            _rm(fs, path, verbose)
         except errors.ResourceNotFound:
             if not force:
                 click.confirm('%s is not exist. Continue?' % path, abort=True, default=True)
