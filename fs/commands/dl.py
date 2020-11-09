@@ -11,8 +11,8 @@ from ._tools import FS2_NOEXIST, FS2_ISFILE, FS2_ISDIR
 def _download(fs, src, dst, vcount=0):
     with open(dst, 'wb') as f:
         fs.download(src, f)
-        if vcount >= 1:
-            print(time.strftime('%F_%T'), 'transfer %8.3f Kbytes for %s' % (f.tell()/1024, dst))
+    if vcount >= 1:
+        print(time.strftime('%F_%T'), 'transfer %8.3f Kbytes for %s' % (os.path.getsize(dst)/1024, dst))
 
 @click.command()
 @click.argument('src', nargs=-1)

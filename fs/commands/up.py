@@ -9,9 +9,9 @@ from ._tools import FS2_NOEXIST, FS2_ISFILE, FS2_ISDIR
 
 def _upload(fs, src, dst, vcount=0):
     with open(src, 'rb') as f:
-        fs.upload(dst, f)
-        if vcount >= 1:
-            print(time.strftime('%F_%T'), 'transfer %8.3f Kbytes for %s' % (f.tell()/1024, dst))
+        fs.upload(dst, f) # f will close in boto3 ... so on
+    if vcount >= 1:
+        print(time.strftime('%F_%T'), 'transfer %10s bytes for %s' % (os.path.getsize(src), dst))
 
 @click.command()
 @click.argument('src', nargs=-1)
