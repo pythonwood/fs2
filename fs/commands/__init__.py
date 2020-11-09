@@ -11,6 +11,7 @@ from .mv    import mv
 from .rm    import rm
 from .dl    import dl
 from .up    import up
+from .info  import info
 
 fs2.add_command(help )
 fs2.add_command(ls   )
@@ -22,5 +23,6 @@ fs2.add_command(mv   )
 fs2.add_command(rm   )
 fs2.add_command(dl   )
 fs2.add_command(up   )
+fs2.add_command(info )
 
 __all__ = ["fs2"]
