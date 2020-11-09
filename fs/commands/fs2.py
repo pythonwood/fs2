@@ -13,20 +13,20 @@ def _listopener():
 @click.option('--url', '-u', default='.', help='filesystem url: default is "."')
 @click.pass_context
 def fs2(ctx, listopener, url):
-    '''This script is pyfilesystem2 command line tool
+    '''This script is pyfilesystem2 command line tool.
 
     \b
     example:
-        ./fs2 ls .
-        ./fs2 -u file://c:/windows ls system32
-        ./fs2 -u zip:///tmp/a.zip ls /
-        ./fs2 -u tar:///etc/bak.tar.gz  ls opkg config
-        ./fs2 -u temp:// ls .
-        ./fs2 -u s3:// ls .                                 # pip install fs-s3fs
-        ./fs2 -u dropbox:// ls .                            # pip install fs.dropboxfs
-        ./fs2 -u webdav://user:pass@127.0.0.1/web/dav/ ls . # pip install fs.webdavfs
-        ./fs2 -u ssh:// ls .                                # pip install fs.sshfs
-        ./fs2 --listopener                                  # list all support filesystem
+        fs2 ls .
+        fs2 -u file://c:/windows ls system32
+        fs2 -u zip:///tmp/a.zip ls /
+        fs2 -u tar:///etc/bak.tar.gz  ls opkg config
+        fs2 -u temp:// ls .
+        fs2 -u s3:// ls .                                 # pip install fs-s3fs
+        fs2 -u dropbox:// ls .                            # pip install fs.dropboxfs
+        fs2 -u webdav://user:pass@127.0.0.1/web/dav/ ls . # pip install fs.webdavfs
+        fs2 -u ssh:// ls .                                # pip install fs.sshfs
+        fs2 --listopener                                  # list all support filesystem
     '''
     # print(vars(ctx), listopener, url)
     if listopener:

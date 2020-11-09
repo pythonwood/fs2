@@ -8,6 +8,8 @@ from fs.path import relpath, normpath
 @click.pass_context
 def tree(ctx, paths, max_levels):
     '''list files and dirs as tree view.
+
+    \b
     example:
         tree .
         tree dirA dirB fileC

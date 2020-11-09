@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from .fs2   import fs2
-from .help  import help
 from .ls    import ls
 from .cat   import cat
 from .mkdir import mkdir
@@ -14,7 +13,6 @@ from .dl    import dl
 from .up    import up
 from .info  import info
 
-fs2.add_command(help )
 fs2.add_command(ls   )
 fs2.add_command(cat  )
 fs2.add_command(mkdir)

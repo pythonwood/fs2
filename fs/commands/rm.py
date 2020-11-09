@@ -19,6 +19,8 @@ def _rm(fs, path, vcount=0):
 @click.pass_context
 def rm(ctx, paths, force, verbose, interactive, recursive):
     """delete file and dirs.
+
+    \b
     example:
         rm -f file1.txt pic.img
         rm -rf dir1/ dir2/

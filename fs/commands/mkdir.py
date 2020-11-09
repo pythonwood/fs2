@@ -9,7 +9,9 @@ import posixpath
 @click.option('--force', '-f', is_flag=True, help='force skip if instead of aborting')
 @click.pass_context
 def mkdir(ctx, paths, parents, force):
-    """create folders.
+    """create directory.
+
+    \b
     example:
         mkdir dir1 dir2
         mkdir -p dir1/sub/dir dir2/

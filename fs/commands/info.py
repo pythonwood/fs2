@@ -8,9 +8,16 @@ from fs.path import relpath, normpath
 @click.pass_context
 def info(ctx, paths, force):
     '''get info of resource.
+
+    \b
     example:
         info .
         info dirA dirx/ a/b.txt
+
+    \b
+    important:
+        fs,getinfo('a/b/') raise ResourceNotFound although listdir('a/b/') ok.
+        only makdir ('a/b/') fix it.
     '''
     fs = ctx.obj['fs']
     url = ctx.obj['url']

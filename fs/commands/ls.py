@@ -10,6 +10,8 @@ from ._words2lines import words2lines
 @click.pass_context
 def ls(ctx, paths, force):
     '''list files and dirs.
+
+    \b
     example:
         ls .
         ls dirA dirx/ a/b.txt

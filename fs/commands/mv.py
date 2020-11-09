@@ -8,6 +8,8 @@ from ._tools import FS2_NOEXIST, FS2_ISFILE, FS2_ISDIR
 
 def _mv(fs, src, dst, force, vcount=0):
     """move file and dirs.
+
+    \b
     example:
         mkdir dir1 dir2
         mkdir -p dir1/sub/dir dir2/
