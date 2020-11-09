@@ -32,6 +32,10 @@ def dl(ctx, src, dst, force, verbose):
     """
     fs = ctx.obj['fs']
 
+    def fs_read_error(path, e):
+        print(time.strftime('%F_%T'), 'ERROR: %s. ignore' % e)
+        return True # to ignore
+
     ### check dst part
     dst_is, dirlist = FS2_ISDIR, []
     try:
@@ -54,14 +58,13 @@ def dl(ctx, src, dst, force, verbose):
         fn = abspath(fn)
         _dname, _fname = posixpath.split(fn)
         try:
-            for top, subs, files in fs.walk.walk(fn):
+            for top, subs, files in fs.walk.walk(fn, on_error=fs_read_error):
                 # dl remote/dir pathnoexist =>  remote/dir/a/b default to pathnoexist/dir/a/b
                 _dst = posixpath.join(dst, top[len(_dname):].lstrip('/'))
                 if dst_is == FS2_NOEXIST:
                     _dst = posixpath.join(dst, top[len(fn):].lstrip('/'))    # fix to pathnoexist/a/b
                 try:
                     os.makedirs(_dst, exist_ok=force)
-                    print(time.strftime('%F_%T'), 'mkdir %s' % _dst)
                 except FileExistsError:
                     if not force:
                         click.confirm('%s is an exist dir. Continue?' % _dst, abort=True, default=True)
