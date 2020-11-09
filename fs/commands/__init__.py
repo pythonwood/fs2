@@ -5,6 +5,7 @@ from .help  import help
 from .ls    import ls
 from .cat   import cat
 from .mkdir import mkdir
+from .rmdir import rmdir
 from .tree  import tree
 from .cp    import cp
 from .mv    import mv
@@ -17,6 +18,7 @@ fs2.add_command(help )
 fs2.add_command(ls   )
 fs2.add_command(cat  )
 fs2.add_command(mkdir)
+fs2.add_command(rmdir)
 fs2.add_command(tree )
 fs2.add_command(cp   )
 fs2.add_command(mv   )
