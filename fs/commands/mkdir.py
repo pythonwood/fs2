@@ -22,11 +22,14 @@ def mkdir(ctx, paths, parents, force):
             if parents:
                 fs.makedirs(path, recreate=True)
             else:
-                fs.makedir(path, recreate=True)
+                fs.makedir(path, recreate=False)
         except errors.ResourceNotFound:
             if not force:
                 click.confirm('parent dir %s not exist. Skip?' % posixpath.dirname(path), abort=True, default=True)
         except errors.DirectoryExpected as e:
-            click.echo('%s. Check Tip: %s' % (e, path.replace('/', '(<-aFile?) / ')))
-            break
+            if not force:
+                click.confirm('%s file path found %s. Skip?' % (e, path.replace('/', '(<-aFile?) / ')), abort=True, default=True)
+        except errors.DirectoryExists as e:
+            if not force:
+                click.confirm('dir %s already exits. Skip?' % path, abort=True, default=True)
 

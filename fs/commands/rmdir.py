@@ -26,5 +26,4 @@ def rmdir(ctx, paths, force):
         except errors.FSError as e:
             if not force:
                 click.confirm('%s. Skip?' % e, abort=True, default=True)
-        print()
 
