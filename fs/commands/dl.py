@@ -33,8 +33,14 @@ def dl(ctx, src, dst, force, verbose):
     fs = ctx.obj['fs']
 
     def fs_read_error(path, e):
-        print(time.strftime('%F_%T'), 'ERROR: %s. ignore' % e)
-        return True # to ignore
+        try:
+            dirlist = fs.listdir(path)
+        except errors.FSError:
+            return False
+        else:
+            fs.makedirs(path)
+            print(time.strftime('%F_%T'), 'WARN: %s should be dir because it has files, fixed.' % e)
+            return True # to ignore
 
     ### check dst part
     dst_is, dirlist = FS2_ISDIR, []
