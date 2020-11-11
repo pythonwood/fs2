@@ -34,7 +34,7 @@ def fs2(ctx, listopener, url):
         fs2 -u s3:// ls .                                 # pip install fs-s3fs
         fs2 -u dropbox:// ls .                            # pip install fs.dropboxfs
         fs2 -u webdav://user:pass@127.0.0.1/web/dav/ ls . # pip install fs.webdavfs
-        fs2 -u ssh://my.vps.com/home/ ls .                                # pip install fs.sshfs
+        fs2 -u ssh://my.vps.com/home/ ls .                # pip install fs.sshfs
         fs2 --listopener                                  # list all support filesystem
 
     \b
@@ -57,7 +57,9 @@ def fs2(ctx, listopener, url):
         ctx.obj['url'] = u
         ctx.obj['fs'] = _open_fs(u)
         subcmd = click.Group.get_command(fs2, ctx, ctx.invoked_subcommand)
-        ctx.invoke(subcmd)
+        # ctx.forward(subcmd) # TypeError: ls() got an unexpected keyword argument 'url'
+        # ctx.forward(fs2)    # ctx has no sub command forward
+        ctx.invoke(subcmd)    # subcmd`s args is empty # click/core.py +1256
     ctx.exit()
 
 
