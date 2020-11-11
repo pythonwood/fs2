@@ -1,6 +1,7 @@
 import click
 from fs import errors
 from fs.path import relpath, normpath
+from fs.osfs import OSFS
 
 from ._words2lines import words2lines
 
@@ -19,12 +20,17 @@ def ls(ctx, paths, force):
     fs = ctx.obj['fs']
     url = ctx.obj['url']
     paths = paths or ['.']
+    for u,f in fs.items():
+        fs_ls(f, paths, force)
+
+def fs_ls(fs, paths, force):
     for path in paths:
         _path = path
         path = relpath(normpath(path))
         try:
             names = fs.listdir(path)
-            if url.lower().startswith('file://') or url.lower().startswith('osfs://'):
+            # if url.lower().startswith('file://') or url.lower().startswith('osfs://'):
+            if isinstance(fs, OSFS):
                 names.sort(key=lambda x: x.lstrip('.').lstrip('_').lower()) # sort as /bin/ls do
                 # names = ['.', '..'] + names       # need not
             if len(paths) > 1:

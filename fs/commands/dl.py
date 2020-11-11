@@ -31,7 +31,13 @@ def dl(ctx, src, dst, force, verbose):
         dl a.txt b.png c.mp3 dir/d/ remote/dir/
     """
     fs = ctx.obj['fs']
+    u, f = fs.popitem()
+    fs_dl(f, src, dst, force, verbose)
+    if fs:
+        for u,f in fs.items():
+            fs_dl(f, src, posixpath.join(dst, time.strftime('%F_%T')) , force, verbose)
 
+def fs_dl(fs, src, dst, force, verbose):
     def fs_read_error(path, e):
         try:
             dirlist = fs.listdir(path)

@@ -17,6 +17,10 @@ def mkdir(ctx, paths, parents, force):
         mkdir -p dir1/sub/dir dir2/
     """
     fs = ctx.obj['fs']
+    for u,f in fs.items():
+        fs_mkdir(f, paths, parents, force)
+
+def fs_mkdir(fs, paths, parents, force):
     for path in paths:
         try:
             if parents:

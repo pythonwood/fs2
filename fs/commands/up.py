@@ -30,7 +30,10 @@ def up(ctx, src, dst, force, verbose):
         up ./ remote/
     """
     fs = ctx.obj['fs']
+    for u,f in fs.items():
+        fs_up(f, src, dst, force, verbose)
 
+def fs_up(fs, src, dst, force, verbose):
     ### check dst part
     dst_is, dirlist = FS2_ISDIR, []
     try:

@@ -18,6 +18,10 @@ def rmdir(ctx, paths, force):
     fs = ctx.obj['fs']
     url = ctx.obj['url']
     paths = paths or ['.']
+    for u,f in fs.items():
+        fs_rmdir(f, paths, force)
+
+def fs_rmdir(fs, paths, force):
     for path in paths:
         _path = path
         path = relpath(normpath(path))

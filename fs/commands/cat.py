@@ -16,6 +16,10 @@ def cat(ctx, paths, force):
         cat a.ini a.txt
     '''
     fs = ctx.obj['fs']
+    for u,f in fs.items():
+        fs_cat(f, paths, force)
+
+def fs_cat(fs, paths, force):
     for path in paths:
         path = relpath(normpath(path))
         try:

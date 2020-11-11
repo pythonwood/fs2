@@ -15,6 +15,10 @@ def tree(ctx, paths, max_levels):
         tree dirA dirB fileC
     '''
     fs = ctx.obj['fs']
+    for u,f in fs.items():
+        fs_tree(f, paths, max_levels)
+
+def fs_tree(fs, paths, max_levels):
     paths = paths or ['.']
     for _path in paths:
         click.echo('%s:' % _path)

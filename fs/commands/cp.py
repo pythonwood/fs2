@@ -34,7 +34,10 @@ def cp(ctx, src, dst, force, verbose, recursive):
         cp tox.ini a.ini dir/ path/to/
     """
     fs = ctx.obj['fs']
+    for u,f in fs.items():
+        fs_cp(f, src, dst, force, verbose, recursive)
 
+def fs_cp(fs, src, dst, force, verbose, recursive):
     ### check dst part
     dst_is, dirlist = FS2_ISDIR, []
     try:

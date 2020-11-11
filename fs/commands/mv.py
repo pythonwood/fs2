@@ -36,7 +36,10 @@ def mv(ctx, src, dst, force, verbose):
     ./fs2 mv tox.ini a.ini dir/ path/to/
     """
     fs = ctx.obj['fs']
+    for u,f in fs.items():
+        fs_mv(f, src, dst, force, verbose)
 
+def fs_mv(fs, src, dst, force, verbose):
     ### check dst part
     dst_is, dirlist = FS2_ISDIR, []
     try:

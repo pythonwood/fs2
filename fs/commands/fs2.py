@@ -52,14 +52,15 @@ def fs2(ctx, listopener, url):
 
     ctx.ensure_object(dict)
     # so, a for loop in group is better than for loop in subcmd
-    # # ctx.obj['fss'] = OrderedDict((u, _open_fs(u)) for u in url)
-    for u in url:
-        ctx.obj['url'] = u
-        ctx.obj['fs'] = _open_fs(u)
-        subcmd = click.Group.get_command(fs2, ctx, ctx.invoked_subcommand)
-        # ctx.forward(subcmd) # TypeError: ls() got an unexpected keyword argument 'url'
-        # ctx.forward(fs2)    # ctx has no sub command forward
-        ctx.invoke(subcmd)    # subcmd`s args is empty # click/core.py +1256
-    ctx.exit()
+    # but not subcmd content pass then no way. see click/core.py +1256
+    ctx.obj['fs'] = OrderedDict((u, _open_fs(u)) for u in url)
+    ctx.obj['url'] = '\n'.join(url)
+    # for u in url:
+    #     ctx.obj['url'] = u
+    #     ctx.obj['fs'] = _open_fs(u)
+    #     subcmd = click.Group.get_command(fs2, ctx, ctx.invoked_subcommand)
+    #     # ctx.forward(subcmd) # TypeError: ls() got an unexpected keyword argument 'url'
+    #     # ctx.forward(fs2)    # ctx has no sub command forward
+    #     # ctx.invoke(subcmd)  # subcmd`s args is empty # click/core.py +1256
 
 

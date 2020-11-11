@@ -29,7 +29,10 @@ def rm(ctx, paths, force, verbose, interactive, recursive):
     if not force:
         click.confirm('delete is dangerous. Continue?', abort=True, default=True)
     fs = ctx.obj['fs']
+    for u,f in fs.items():
+        fs_rm(f, paths, force, verbose, interactive, recursive)
 
+def fs_rm(fs, paths, force, verbose, interactive, recursive):
     def fs_read_error(path, e):
         try:
             dirlist = fs.listdir(path)
@@ -40,7 +43,7 @@ def rm(ctx, paths, force, verbose, interactive, recursive):
         except errors.FSError:
             return False
         else:
-            ctx.invoke(rm, paths=[posixpath.join(path, d) for d in dirlist], force=force,
+            fs_rm(fs, paths=[posixpath.join(path, d) for d in dirlist], force=force,
                        verbose=verbose, interactive=interactive, recursive=recursive)
             return True # to ignore
 

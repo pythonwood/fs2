@@ -22,6 +22,10 @@ def info(ctx, paths, force):
     fs = ctx.obj['fs']
     url = ctx.obj['url']
     paths = paths or ['.']
+    for u,f in fs.items():
+        fs_info(f, paths, force)
+
+def fs_info(fs, paths, force):
     for path in paths:
         _path = path
         path = relpath(normpath(path))
