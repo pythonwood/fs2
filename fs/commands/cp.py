@@ -2,8 +2,9 @@ from fs.path import relpath, normpath, abspath
 import os,sys,time
 import posixpath
 
-from .init import fs2, click, errors
-from .init import FS2_NOEXIST, FS2_ISFILE, FS2_ISDIR
+import click
+from fs import errors
+from ._tools import FS2_NOEXIST, FS2_ISFILE, FS2_ISDIR
 
 def _cp(fs, src, dst, force, vcount=0):
     try:
@@ -16,7 +17,7 @@ def _cp(fs, src, dst, force, vcount=0):
         print(time.strftime('%F_%T'), 'copyed %s -> %s' % (src, dst))
 
 
-@fs2.command()
+@click.command()
 @click.argument('src', nargs=-1)
 @click.argument('dst', nargs=1)
 @click.option('--force', '-f', is_flag=True, help='force overwrite if existing destination file')
@@ -24,13 +25,19 @@ def _cp(fs, src, dst, force, vcount=0):
 @click.option('--recursive', '-r', is_flag=True, help='copy directories recursively')
 @click.pass_context
 def cp(ctx, src, dst, force, verbose, recursive):
-    """Copy file.
-    ./fs2 cp tox.ini .
-    ./fs2 cp tox.ini tmp.ini
-    ./fs2 cp tox.ini a.ini dir/ path/to/
+    """copy file (same fs).
+
+    \b
+    example:
+        cp dir/a/tox.ini ./
+        cp tox.ini tmp.ini
+        cp tox.ini a.ini dir/ path/to/
     """
     fs = ctx.obj['fs']
+    for u,f in fs.items():
+        fs_cp(f, src, dst, force, verbose, recursive)
 
+def fs_cp(fs, src, dst, force, verbose, recursive):
     ### check dst part
     dst_is, dirlist = FS2_ISDIR, []
     try:

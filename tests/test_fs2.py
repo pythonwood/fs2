@@ -41,7 +41,7 @@ class TestFS2(unittest.TestCase):
             print(self.dir_fs2, 'Already deleted')
 
     def test_help(self):
-        result = self.runner.invoke(fs2, [])
+        result = self.runner.invoke(fs2, ['--help'])
         print(result.output)
         self.assertEqual(result.exit_code, 0)
         self.assertIn('Usage:', result.output)

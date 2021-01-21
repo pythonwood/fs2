@@ -3,31 +3,37 @@ import os,sys,time
 import posixpath
 import io
 
-from .init import fs2, click, errors, timing
-from .init import FS2_NOEXIST, FS2_ISFILE, FS2_ISDIR
+import click
+from fs import errors
+from ._tools import FS2_NOEXIST, FS2_ISFILE, FS2_ISDIR
 
 def _upload(fs, src, dst, vcount=0):
     with open(src, 'rb') as f:
-        fs.upload(dst, f)
-        if vcount >= 1:
-            print(time.strftime('%F_%T'), 'transfer %8.3f Kbytes for %s' % (f.tell()/1024, dst))
+        fs.upload(dst, f) # f will close in boto3 ... so on
+    if vcount >= 1:
+        print(time.strftime('%F_%T'), 'transfer %10s bytes for %s' % (os.path.getsize(src), dst))
 
-@fs2.command()
+@click.command()
 @click.argument('src', nargs=-1)
 @click.argument('dst', nargs=1)
 @click.option('--force', '-f', is_flag=True, help='force overwrite if existing destination file')
 @click.option('--verbose', '-v', count=True, help='more info')
 @click.pass_context
 def up(ctx, src, dst, force, verbose):
-    """upload local file to remote filesystem
+    """upload local disk file to remote filesystem.
+
+    \b
     example:
-    up a.txt .
-    up a.txt remote/b.txt
-    up a.txt b.png c.mp3 dir/d/ remote/dir/
-    up ./ remote/
+        up a.txt .
+        up a.txt b.txt
+        up a.txt b.png c.mp3 dir/d/ remote/dir/
+        up ./ remote/
     """
     fs = ctx.obj['fs']
+    for u,f in fs.items():
+        fs_up(f, src, dst, force, verbose)
 
+def fs_up(fs, src, dst, force, verbose):
     ### check dst part
     dst_is, dirlist = FS2_ISDIR, []
     try:

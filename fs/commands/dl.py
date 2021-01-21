@@ -3,31 +3,50 @@ import os,sys,time
 import posixpath
 import io
 
-from .init import fs2, click, errors, timing
-from .init import FS2_NOEXIST, FS2_ISFILE, FS2_ISDIR
+import click
+from fs import errors
+from ._tools import FS2_NOEXIST, FS2_ISFILE, FS2_ISDIR
 
 
 def _download(fs, src, dst, vcount=0):
     with open(dst, 'wb') as f:
         fs.download(src, f)
-        if vcount >= 1:
-            print(time.strftime('%F_%T'), 'transfer %8.3f Kbytes for %s' % (f.tell()/1024, dst))
+    if vcount >= 1:
+        print(time.strftime('%F_%T'), 'transfer %10s bytes for %s' % (os.path.getsize(dst), dst))
 
-@fs2.command()
+@click.command()
 @click.argument('src', nargs=-1)
 @click.argument('dst', nargs=1)
 @click.option('--force', '-f', is_flag=True, help='force overwrite if existing destination file')
 @click.option('--verbose', '-v', count=True, help='more info')
 @click.pass_context
 def dl(ctx, src, dst, force, verbose):
-    """download file to local os
+    """download file to local disk.
+
+    \b
     example:
-    dl . locdir/
-    dl a.txt .
-    dl a.txt loc/b.txt
-    dl a.txt b.png c.mp3 dir/d/ remote/dir/
+        dl a.txt .
+        dl a.txt loc/b.txt
+        dl ./ locdir/
+        dl a.txt b.png c.mp3 dir/d/ remote/dir/
     """
     fs = ctx.obj['fs']
+    u, f = fs.popitem()
+    fs_dl(f, src, dst, force, verbose)
+    if fs:
+        for u,f in fs.items():
+            fs_dl(f, src, posixpath.join(dst, time.strftime('%F_%T')) , force, verbose)
+
+def fs_dl(fs, src, dst, force, verbose):
+    def fs_read_error(path, e):
+        try:
+            dirlist = fs.listdir(path)
+        except errors.FSError:
+            return False
+        else:
+            fs.makedirs(path)
+            print(time.strftime('%F_%T'), 'WARN: %s should be dir because it has files, fixed.' % e)
+            return True # to ignore
 
     ### check dst part
     dst_is, dirlist = FS2_ISDIR, []
@@ -51,7 +70,7 @@ def dl(ctx, src, dst, force, verbose):
         fn = abspath(fn)
         _dname, _fname = posixpath.split(fn)
         try:
-            for top, subs, files in fs.walk.walk(fn):
+            for top, subs, files in fs.walk.walk(fn, on_error=fs_read_error):
                 # dl remote/dir pathnoexist =>  remote/dir/a/b default to pathnoexist/dir/a/b
                 _dst = posixpath.join(dst, top[len(_dname):].lstrip('/'))
                 if dst_is == FS2_NOEXIST:
@@ -68,7 +87,7 @@ def dl(ctx, src, dst, force, verbose):
             if dst_is == FS2_ISDIR:
                 _dst = posixpath.join(dst, posixpath.basename(fn))
             _download(fs, fn, _dst, verbose)
-        except errors.ResourceNotFound:
+        except errors.ResourceNotFound as e:
             if not force:
-                click.confirm('%s is not exist. Continue?' % fn, abort=True, default=True)
+                click.confirm('%s. Continue?' % e, abort=True, default=True)
 
