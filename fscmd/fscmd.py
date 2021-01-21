@@ -66,6 +66,3 @@ def fscmd(ctx, listopener, url):
     #     # ctx.forward(fscmd)    # ctx has no sub command forward
     #     # ctx.invoke(subcmd)  # subcmd`s args is empty # click/core.py +1256
 
-
-if __name__ == '__main__':
-    fscmd()
