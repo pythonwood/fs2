@@ -22,12 +22,12 @@ CLASSIFIERS = [
     "Topic :: System :: Filesystems",
 ]
 
-REQUIREMENTS = ["appdirs~=1.4.3", "pytz", "setuptools", "six~=1.10", "click"]
+REQUIREMENTS = ["setuptools", "click", 'fs']
 
-# CONSOLE_SCRIPTS = ['fs2 = fs.commands.fs2:fs2'] # failed
+# CONSOLE_SCRIPTS = ['fscmd = fs.commands.fscmd:fscmd'] # failed
 CONSOLE_SCRIPTS_STR = '''
         [console_scripts]
-        fs2=fs.commands:fs2
+        fscmd=fs.commands:fscmd
     '''
 
 setup(
@@ -51,6 +51,6 @@ setup(
     url="https://github.com/PyFilesystem/pyfilesystem2",
     version=__version__,
     # entry_points={"console_scripts": CONSOLE_SCRIPTS}, # failed
-    # scripts=['fs2'],
+    # scripts=['fscmd'],
     entry_points=CONSOLE_SCRIPTS_STR,
 )

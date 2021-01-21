@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from fs.commands import fs2
+from fscmd import fscmd
 
 if __name__ == '__main__':
-    fs2()
+    fscmd()

@@ -31,9 +31,9 @@ def _mv(fs, src, dst, force, vcount=0):
 @click.pass_context
 def mv(ctx, src, dst, force, verbose):
     """move file (same fs).
-    ./fs2 mv tox.ini .
-    ./fs2 mv tox.ini tmp.ini
-    ./fs2 mv tox.ini a.ini dir/ path/to/
+    ./fscmd mv tox.ini .
+    ./fscmd mv tox.ini tmp.ini
+    ./fscmd mv tox.ini a.ini dir/ path/to/
     """
     fs = ctx.obj['fs']
     for u,f in fs.items():
