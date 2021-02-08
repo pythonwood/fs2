@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 
+# 2021-02-08 I found it is bad for many pipy packages name has been used but never update.
+
 # doc: https://packaging.python.org/tutorials/packaging-projects/
 # python3 setup.py sdist bdist_wheel
-# python3 -m twine upload --repository testpypi dist/fscmd-0.0.2*
-# python3 -m pip install --index-url https://test.pypi.org/simple/ fscmd==0.0.2
+# python3 -m twine upload --repository testpypi dist/fs2-0.0.2*
+# python3 -m pip install --index-url https://test.pypi.org/simple/ fs2==0.0.2
 
 from setuptools import setup, find_packages
 
-with open("fscmd/_version.py") as f:
+with open("fs2/_version.py") as f:
     exec(f.read())
 
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -26,10 +28,10 @@ CLASSIFIERS = [
 
 REQUIREMENTS = ["setuptools", "click", 'fs']
 
-# CONSOLE_SCRIPTS = ['fscmd = fscmd.fscmd:fscmd'] # failed
+# CONSOLE_SCRIPTS = ['fs2 = fs2.fs2:fs2'] # failed
 CONSOLE_SCRIPTS_STR = '''
         [console_scripts]
-        fscmd=fscmd:fscmd
+        fs2=fs2:fs2
     '''
 
 setup(
@@ -44,15 +46,15 @@ setup(
         ":python_version < '3.6'": ["typing~=3.6"],
     },
     license="MIT",
-    name="fscmd",
+    name="fs2",
     packages=find_packages(exclude=("tests",)),
     package_data={"fs": ["py.typed"]},
     zip_safe=False,
     platforms=["any"],
-    url="https://github.com/pythonwood/fscmd",
+    url="https://github.com/pythonwood/fs2",
     version=__version__,
     # entry_points={"console_scripts": CONSOLE_SCRIPTS}, # failed
-    # scripts=['fscmd'],
+    # scripts=['fs2'],
     entry_points=CONSOLE_SCRIPTS_STR,
     python_requires='>=3.6',
 )
